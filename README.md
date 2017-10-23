@@ -133,3 +133,40 @@ PLEASE NOTE: Setting a field does not update the database. You can set and inter
 ```php
 $manager->save();
 ```
+
+### Available Fields
+
+```
+// Standard fields
+new ACFFusion\Field\ButtonGroup();
+new ACFFusion\Field\Checkbox();
+new ACFFusion\Field\ColorPicker();
+new ACFFusion\Field\DatePicker();
+new ACFFusion\Field\DateTimePicker();
+new ACFFusion\Field\Email();
+new ACFFusion\Field\File();
+new ACFFusion\Field\Gallery();
+new ACFFusion\Field\GoogleMap();
+new ACFFusion\Field\Image();
+new ACFFusion\Field\Message();
+new ACFFusion\Field\Number();
+new ACFFusion\Field\oEmbed();
+new ACFFusion\Field\PageLink();
+new ACFFusion\Field\Password();
+new ACFFusion\Field\PostObject();
+new ACFFusion\Field\Radio();
+new ACFFusion\Field\Range();
+new ACFFusion\Field\Relationship();
+new ACFFusion\Field\Select();
+new ACFFusion\Field\Tab();
+new ACFFusion\Field\Taxonomy();
+new ACFFusion\Field\Text();
+new ACFFusion\Field\Textarea();
+new ACFFusion\Field\TimePicker();
+new ACFFusion\Field\User();
+new ACFFusion\Field\Wysiwyg();
+
+// Fields with subfields
+new ACFFusion\Field\Repeater();
+new ACFFusion\Field\Group();
+```
