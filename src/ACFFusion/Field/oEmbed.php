@@ -4,12 +4,13 @@ namespace ACFFusion\Field;
 
 use ACFFusion\Field;
 
-class Tab extends Field {
+class oEmbed extends Field {
 
     public static $defaults = [
         'key' => '',
         'name' => '',
-        'type' => 'tab',
+        'type' => 'oembed',
+        'label' => '',
         'instructions' => '',
         'required' => '',
         'conditional_logic' => '',
@@ -18,26 +19,23 @@ class Tab extends Field {
             'class' => '',
             'id' => '',
         ],
-        'placement' => 'left',
-        'endpoint' => ''
+        'width' => '',
+        'height' => ''
     ];
 
-    public static $type = 'tab';
+    public static $type = 'field';
 
-    public static $purpose = 'display';
-
-    public function setPlacement($value) {
+    public function setWidth($value) {
         // Set the setting option value
-        $this->settings['placement'] = (string)$value;
+        $this->settings['width'] = (float)$value;
         // Return for chaining
         return $this;
     }
 
-    public function setEndpoint($value) {
+    public function setHeight($value) {
         // Set the setting option value
-        $this->settings['endpoint'] = (bool)$value;
+        $this->settings['height'] = (float)$value;
         // Return for chaining
         return $this;
     }
-
 }

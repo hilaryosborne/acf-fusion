@@ -4,12 +4,12 @@ namespace ACFFusion\Field;
 
 use ACFFusion\Field;
 
-class Password extends Field {
+class User extends Field {
 
     public static $defaults = [
         'key' => '',
         'name' => '',
-        'type' => 'password',
+        'type' => 'user',
         'label' => '',
         'instructions' => '',
         'required' => '',
@@ -19,23 +19,30 @@ class Password extends Field {
             'class' => '',
             'id' => '',
         ],
-        'placeholder' => '',
-        'prepend' => '',
-        'append' => ''
+        'role' => '',
+        'allow_null' => 0,
+        'multiple' => 0
     ];
 
     public static $type = 'field';
 
-    public function setPrepend($value) {
+    public function setRole($value) {
         // Set the setting option value
-        $this->settings['prepend'] = (string)$value;
+        $this->settings['role'] = (string)$value;
         // Return for chaining
         return $this;
     }
 
-    public function setAppend($value) {
+    public function setAllowNull($value) {
         // Set the setting option value
-        $this->settings['append'] = (string)$value;
+        $this->settings['allow_null'] = (int)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setMultiple($value) {
+        // Set the setting option value
+        $this->settings['multiple'] = (int)$value;
         // Return for chaining
         return $this;
     }

@@ -4,12 +4,12 @@ namespace ACFFusion\Field;
 
 use ACFFusion\Field;
 
-class Password extends Field {
+class Range extends Field {
 
     public static $defaults = [
         'key' => '',
         'name' => '',
-        'type' => 'password',
+        'type' => 'range',
         'label' => '',
         'instructions' => '',
         'required' => '',
@@ -19,12 +19,36 @@ class Password extends Field {
             'class' => '',
             'id' => '',
         ],
-        'placeholder' => '',
+        'default_value' => '',
+        'min' => '',
+        'max' => '',
+        'step' => '',
         'prepend' => '',
-        'append' => ''
+        'append' => '',
     ];
 
     public static $type = 'field';
+
+    public function setMin($value) {
+        // Set the setting option value
+        $this->settings['min'] = (float)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setMax($value) {
+        // Set the setting option value
+        $this->settings['max'] = (float)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setStep($value) {
+        // Set the setting option value
+        $this->settings['step'] = (float)$value;
+        // Return for chaining
+        return $this;
+    }
 
     public function setPrepend($value) {
         // Set the setting option value

@@ -28,4 +28,39 @@ class PageLink extends Field {
 
     public static $type = 'field';
 
+    public function setPostType($value) {
+        // Set the setting option value
+        $this->settings['post_type'] = (array)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setTaxonomy($value) {
+        // Set the setting option value
+        $this->settings['taxonomy'] = (array)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setAllowNull($value) {
+        // Set the setting option value
+        $this->settings['allow_null'] = (bool)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setAllowArchives($value) {
+        // Set the setting option value
+        $this->settings['allow_archives'] = (bool)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setMultiple($value) {
+        // Set the setting option value
+        $this->settings['multiple'] = (bool)$value;
+        // Return for chaining
+        return $this;
+    }
+
 }

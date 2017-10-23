@@ -4,12 +4,12 @@ namespace ACFFusion\Field;
 
 use ACFFusion\Field;
 
-class Gallery extends Field {
+class Image extends Field {
 
     public static $defaults = [
         'key' => '',
         'name' => '',
-        'type' => 'gallery',
+        'type' => 'image',
         'label' => '',
         'instructions' => '',
         'required' => '',
@@ -19,38 +19,30 @@ class Gallery extends Field {
             'class' => '',
             'id' => '',
         ],
-        'min' => '',
-        'max' => '',
-        'insert' => 'append',
-        'library' => 'uploadedTo',
+        'return_format' => 'array',
+        'preview_size' => 'thumbnail',
+        'library' => 'all',
         'min_width' => '',
         'min_height' => '',
         'min_size' => '',
         'max_width' => '',
         'max_height' => '',
         'max_size' => '',
-        'mime_types' => '',
+        'mime_types' => ''
     ];
 
     public static $type = 'field';
 
-    public function setMin($value) {
+    public function setReturnFormat($value) {
         // Set the setting option value
-        $this->settings['min'] = (int)$value;
+        $this->settings['return_format'] = (string)$value;
         // Return for chaining
         return $this;
     }
 
-    public function setMax($value) {
+    public function setPreviewSize($value) {
         // Set the setting option value
-        $this->settings['max'] = (int)$value;
-        // Return for chaining
-        return $this;
-    }
-
-    public function setInsert($value) {
-        // Set the setting option value
-        $this->settings['insert'] = (string)$value;
+        $this->settings['preview_size'] = (string)$value;
         // Return for chaining
         return $this;
     }
@@ -106,7 +98,7 @@ class Gallery extends Field {
 
     public function setMimeTypes($value) {
         // Set the setting option value
-        $this->settings['mime_types'] = (int)$value;
+        $this->settings['mime_types'] = $value;
         // Return for chaining
         return $this;
     }

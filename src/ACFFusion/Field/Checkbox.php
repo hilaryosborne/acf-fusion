@@ -4,12 +4,12 @@ namespace ACFFusion\Field;
 
 use ACFFusion\Field;
 
-class Select extends Field {
+class Checkbox extends Field {
 
     public static $defaults = [
         'key' => '',
         'name' => '',
-        'type' => 'select',
+        'type' => 'checkbox',
         'label' => '',
         'instructions' => '',
         'required' => '',
@@ -20,13 +20,12 @@ class Select extends Field {
             'id' => '',
         ],
         'choices' => [],
-        'default_value' => '',
-        'allow_null' => 0,
-        'multiple' => 0,
-        'ui' => 0,
-        'ajax' => 0,
+        'allow_custom' => 0,
+        'save_custom' => 0,
+        'default_value' => [],
+        'layout' => 'vertical',
+        'toggle' => 0,
         'return_format' => 'value',
-        'placeholder' => ''
     ];
 
     public static $type = 'field';
@@ -38,30 +37,30 @@ class Select extends Field {
         return $this;
     }
 
-    public function setAllowNull($value) {
+    public function setAllowCustom($value) {
         // Set the setting option value
-        $this->settings['allow_null'] = (bool)$value;
+        $this->settings['allow_custom'] = (int)$value;
         // Return for chaining
         return $this;
     }
 
-    public function setMultiple($value) {
+    public function setSaveCustom($value) {
         // Set the setting option value
-        $this->settings['multiple'] = (bool)$value;
+        $this->settings['save_custom'] = (int)$value;
         // Return for chaining
         return $this;
     }
 
-    public function setUI($value) {
+    public function setLayout($value) {
         // Set the setting option value
-        $this->settings['ui'] = (bool)$value;
+        $this->settings['layout'] = (string)$value;
         // Return for chaining
         return $this;
     }
 
-    public function setAJAX($value) {
+    public function setToggle($value) {
         // Set the setting option value
-        $this->settings['ajax'] = (bool)$value;
+        $this->settings['toggle'] = (int)$value;
         // Return for chaining
         return $this;
     }

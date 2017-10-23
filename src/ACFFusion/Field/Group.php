@@ -27,6 +27,20 @@ class Group extends Field {
 
     public $subFields = [];
 
+    public function setLayout($value) {
+        // Set the setting option value
+        $this->settings['layout'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setButtonLabel($value) {
+        // Set the setting option value
+        $this->settings['button_label'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
     public function addField($fieldObj) {
         // Set the parent for future use
         $fieldObj->setParent($this);

@@ -25,4 +25,18 @@ class TimePicker extends Field {
 
     public static $type = 'field';
 
+    public function setDisplayFormat($value) {
+        // Set the setting option value
+        $this->settings['display_format'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setReturnFormat($value) {
+        // Set the setting option value
+        $this->settings['return_format'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
 }

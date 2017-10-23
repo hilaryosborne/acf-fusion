@@ -4,12 +4,13 @@ namespace ACFFusion\Field;
 
 use ACFFusion\Field;
 
-class Tab extends Field {
+class Email extends Field {
 
     public static $defaults = [
         'key' => '',
         'name' => '',
-        'type' => 'tab',
+        'type' => 'email',
+        'label' => '',
         'instructions' => '',
         'required' => '',
         'conditional_logic' => '',
@@ -18,24 +19,24 @@ class Tab extends Field {
             'class' => '',
             'id' => '',
         ],
-        'placement' => 'left',
-        'endpoint' => ''
+        'default_value' => '',
+        'placeholder' => '',
+        'prepend' => '',
+        'append' => ''
     ];
 
-    public static $type = 'tab';
+    public static $type = 'field';
 
-    public static $purpose = 'display';
-
-    public function setPlacement($value) {
+    public function setPrepend($value) {
         // Set the setting option value
-        $this->settings['placement'] = (string)$value;
+        $this->settings['prepend'] = (string)$value;
         // Return for chaining
         return $this;
     }
 
-    public function setEndpoint($value) {
+    public function setAppend($value) {
         // Set the setting option value
-        $this->settings['endpoint'] = (bool)$value;
+        $this->settings['append'] = (string)$value;
         // Return for chaining
         return $this;
     }

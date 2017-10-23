@@ -4,12 +4,12 @@ namespace ACFFusion\Field;
 
 use ACFFusion\Field;
 
-class Password extends Field {
+class Message extends Field {
 
     public static $defaults = [
         'key' => '',
         'name' => '',
-        'type' => 'password',
+        'type' => 'message',
         'label' => '',
         'instructions' => '',
         'required' => '',
@@ -19,23 +19,30 @@ class Password extends Field {
             'class' => '',
             'id' => '',
         ],
-        'placeholder' => '',
-        'prepend' => '',
-        'append' => ''
+        'message' => '',
+        'new_lines' => 'wpautop',
+        'esc_html' => 0
     ];
 
     public static $type = 'field';
 
-    public function setPrepend($value) {
+    public function setMessage($value) {
         // Set the setting option value
-        $this->settings['prepend'] = (string)$value;
+        $this->settings['message'] = (string)$value;
         // Return for chaining
         return $this;
     }
 
-    public function setAppend($value) {
+    public function setNewLines($value) {
         // Set the setting option value
-        $this->settings['append'] = (string)$value;
+        $this->settings['new_lines'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setEscHTML($value) {
+        // Set the setting option value
+        $this->settings['esc_html'] = (bool)$value;
         // Return for chaining
         return $this;
     }

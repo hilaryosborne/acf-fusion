@@ -28,4 +28,25 @@ class Textarea extends Field {
 
     public static $type = 'field';
 
+    public function setRows($value) {
+        // Set the setting option value
+        $this->settings['rows'] = (int)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setMaxLength($value) {
+        // Set the setting option value
+        $this->settings['maxlength'] = (int)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setNewLines($value) {
+        // Set the setting option value
+        $this->settings['new_lines'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
 }

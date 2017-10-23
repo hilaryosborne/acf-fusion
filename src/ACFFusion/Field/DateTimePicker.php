@@ -4,12 +4,12 @@ namespace ACFFusion\Field;
 
 use ACFFusion\Field;
 
-class Password extends Field {
+class DateTimePicker extends Field {
 
     public static $defaults = [
         'key' => '',
         'name' => '',
-        'type' => 'password',
+        'type' => 'date_time_picker',
         'label' => '',
         'instructions' => '',
         'required' => '',
@@ -19,23 +19,30 @@ class Password extends Field {
             'class' => '',
             'id' => '',
         ],
-        'placeholder' => '',
-        'prepend' => '',
-        'append' => ''
+        'display_format' => "d/m/Y g:i a",
+        'return_format' => "d/m/Y g:i a",
+        'first_day' => 1
     ];
 
     public static $type = 'field';
 
-    public function setPrepend($value) {
+    public function setDisplayFormat($value) {
         // Set the setting option value
-        $this->settings['prepend'] = (string)$value;
+        $this->settings['display_format'] = (int)$value;
         // Return for chaining
         return $this;
     }
 
-    public function setAppend($value) {
+    public function setReturnFormat($value) {
         // Set the setting option value
-        $this->settings['append'] = (string)$value;
+        $this->settings['return_format'] = (int)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setFirstDay($value) {
+        // Set the setting option value
+        $this->settings['first_day'] = (bool)$value;
         // Return for chaining
         return $this;
     }
