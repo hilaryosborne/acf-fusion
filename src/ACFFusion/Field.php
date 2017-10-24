@@ -134,4 +134,18 @@ class Field {
         return static::$purpose == 'data' ? [$prefix.$outKey => $value] : [];
     }
 
+    public function addCondition($field, $operator, $value) {
+        // Populate the conditions
+        $conditions = !isset($this->settings['conditional_logic']) || !is_array($this->settings['conditional_logic']) ? [] : $this->settings['conditional_logic'];
+        // Add to the conditions
+        $conditions[] = [
+            'field' => $field,
+            'operator' => $operator,
+            'value' => $value,
+        ];
+        // Update the conditional logic
+        $this->settings['conditional_logic'] = $conditions;
+        // Return the settings array
+        return $this->settings;
+    }
 }
