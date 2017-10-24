@@ -2,6 +2,8 @@
 
 namespace ACFFusion;
 
+use ACFFusion\Condition\Group as ConditionGroup;
+
 class Field {
 
     public $code;
@@ -11,6 +13,8 @@ class Field {
     public $settings = [];
 
     public $parent;
+
+    public $conditions = [];
 
     public static $defaults = [];
 
@@ -134,18 +138,20 @@ class Field {
         return static::$purpose == 'data' ? [$prefix.$outKey => $value] : [];
     }
 
-    public function addCondition($field, $operator, $value) {
-        // Populate the conditions
-        $conditions = !isset($this->settings['conditional_logic']) || !is_array($this->settings['conditional_logic']) ? [] : $this->settings['conditional_logic'];
-        // Add to the conditions
-        $conditions[] = [
-            'field' => $field,
-            'operator' => $operator,
-            'value' => $value,
-        ];
-        // Update the conditional logic
+    public function addConditions($conditionGroup) {
+        // Add the condition group to the list of conditions
+        $this->conditions[] = $conditionGroup;
+        // The conditions array
+        $conditions = [];
+        // Loop through each of the stored conditions
+        foreach ($this->conditions as $k => $conditionObj) {
+            // Populate the conditions array
+            $conditions[] = $conditionObj->toArray();
+        }
+        // Populate the conditional logic
         $this->settings['conditional_logic'] = $conditions;
-        // Return the settings array
+        // Return for chaining
         return $this;
     }
+
 }
