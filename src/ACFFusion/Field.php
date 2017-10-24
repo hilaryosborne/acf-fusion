@@ -146,6 +146,6 @@ class Field {
         // Update the conditional logic
         $this->settings['conditional_logic'] = $conditions;
         // Return the settings array
-        return $this->settings;
+        return $this;
     }
 }
