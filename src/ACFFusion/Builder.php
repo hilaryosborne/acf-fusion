@@ -42,6 +42,55 @@ class Builder extends Field {
 
     }
 
+    public function setMenuOrder($value) {
+        // Set the updated value
+        $this->settings['menu_order'] = (int)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setPosition($value) {
+        // Set the updated value
+        $this->settings['position'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setStyle($value) {
+        // Set the updated value
+        $this->settings['style'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setInstructionPlacement($value) {
+        // Set the updated value
+        $this->settings['instruction_placement'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setHideOnScreen($value) {
+        // Set the updated value
+        $this->settings['hide_on_screen'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setLabelPlacement($value) {
+        // Set the updated value
+        $this->settings['label_placement'] = (string)$value;
+        // Return for chaining
+        return $this;
+    }
+
+    public function setLocation($value) {
+        // Set the updated value
+        $this->settings['location'] = (array)$value;
+        // Return for chaining
+        return $this;
+    }
+
     public function addField($fieldObj) {
         // Set the parent for future use
         $fieldObj->setParent($this);
