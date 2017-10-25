@@ -34,6 +34,13 @@ class Manager {
         return $builderObj->toValues($this->values,'key',$mode);
     }
 
+    public function inject($values, $mode='key') {
+        // Update the values
+        $this->values = $mode === 'name' ? $this->builderObj->toValues($values,'name','key') : $values;
+        // Return for chaining
+        return $this;
+    }
+
     public function getField($path=false, $default=false, $format=true) {
         // Retrieve the manager object
         $builderObj = $this->builderObj;
