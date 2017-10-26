@@ -171,6 +171,20 @@ class Builder extends Field {
         return Arrays::get($fields['fields'], $prepared);
     }
 
+    public function getFieldArray($path) {
+        // Convert the subfields to an array
+        $fields = $this->toArray();
+        // THIS NEEDS REGEX WORK!
+        $filtered = preg_replace("/(\.[0-9]+\.)/", ".",$path);
+        $filtered = preg_replace("/(\.[0-9]+)/", "",$filtered);
+        $filtered = preg_replace("/([0-9]+\.)/", "",$filtered);
+        // Replace all dots with subfields
+        // Child field objects are stored within subfields
+        $prepared = str_replace('.','.sub_fields.', $filtered);
+        // Return the field object
+        return Arrays::get($fields['fields'], $prepared);
+    }
+
     public function getIndex($values) {
         // Retrieve the field settings
         $index = new \stdClass();
