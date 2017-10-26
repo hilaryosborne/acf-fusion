@@ -6,7 +6,9 @@ use Underscore\Types\Arrays;
 
 class Manager {
 
-    public $pid;
+    public $prefix = '';
+
+    public $pid = 0;
 
     public $builderObj;
 
@@ -18,11 +20,39 @@ class Manager {
         $this->builderObj = $builderObj;
     }
 
+    public function isPost() {
+        // Set the pid prefix
+        $this->prefix = '';
+        // Return for chaining
+        return $this;
+    }
+
+    public function isTaxonomy($slug) {
+        // Set the pid prefix
+        $this->prefix = $slug.'_';
+        // Return for chaining
+        return $this;
+    }
+
+    public function isTerm() {
+        // Set the pid prefix
+        $this->prefix = 'term_';
+        // Return for chaining
+        return $this;
+    }
+
+    public function isUser() {
+        // Set the pid prefix
+        $this->prefix = 'user_';
+        // Return for chaining
+        return $this;
+    }
+
     public function load() {
         // Retrieve the manager object
         $builderObj = $this->builderObj;
         // Retrieve the current field values
-        $this->values = $builderObj->toValues(get_fields($this->pid, false),'acf','key');
+        $this->values = $builderObj->toValues(get_fields($this->prefix.$this->pid, false),'acf','key');
         // Return for chaining
         return $this;
     }
@@ -74,7 +104,7 @@ class Manager {
         // The values should be stored as KEYS for ACF to work
         foreach ($values as $fieldKey => $fieldValues) {
             // Update the field
-            update_field($fieldKey, $fieldValues, $this->pid);
+            update_field($fieldKey, $fieldValues, $this->prefix.$this->pid);
         }
     }
 
@@ -95,17 +125,12 @@ class Manager {
         // If no object was found then return the provided variables
         // Do this incase fields have been moved or removed
         if (!$fieldObject) { return $value; }
-        // Rebuild the acf cache key
-        // This cache key is directly from ACF
-        $cache_key = "format_value/post_id={$this->pid}/name={$fieldObject['name']}";
         // Apply ACF filters
         // These filters are directly from ACF
-        $value = apply_filters( "acf/format_value", $value, $this->pid, $fieldObject );
-        $value = apply_filters( "acf/format_value/type={$fieldObject['type']}", $value, $this->pid, $fieldObject );
-        $value = apply_filters( "acf/format_value/name={$fieldObject['_name']}", $value, $this->pid, $fieldObject );
-        $value = apply_filters( "acf/format_value/key={$fieldObject['key']}", $value, $this->pid, $fieldObject );
-        // update cache
-        acf_set_cache($cache_key, $value);
+        $value = apply_filters( "acf/format_value", $value, $this->prefix.$this->pid, $fieldObject );
+        $value = apply_filters( "acf/format_value/type={$fieldObject['type']}", $value, $this->prefix.$this->pid, $fieldObject );
+        $value = apply_filters( "acf/format_value/name={$fieldObject['_name']}", $value, $this->prefix.$this->pid, $fieldObject );
+        $value = apply_filters( "acf/format_value/key={$fieldObject['key']}", $value, $this->prefix.$this->pid, $fieldObject );
         // Return the filtered value
         return $value;
     }
