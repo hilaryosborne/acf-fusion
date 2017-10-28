@@ -14,6 +14,7 @@ composer require sackrin/acf-fusion
 
 ```php
 use ACFFusion\Builder;
+use ACFFusion\FieldGroup;
 use ACFFusion\Field\Tab;
 use ACFFusion\Field\Group;
 use ACFFusion\Field\Text;
@@ -25,44 +26,46 @@ function fusion_register() {
     // Create a new builder instance and populate with field group fields
     // It may be a good idea to either store this instance somewhere or create a function to access
     // your builder instance later. You will need it to access and persist field values
-    $builder = (new Builder('example_settings', 'Settings'))
-        // Add that we want these fields to appear on the page post type
-        ->addLocation('post_type', 'page')
-        // Add various fields, tabs etc
-        ->addField((new Tab('profile', 'PROFILE DETAILS')))
-        ->addField((new Select('profile_title', 'Title'))
-            ->setChoices([
-                'mr' => 'Mr',
-                'mrs' => 'Mrs',
-                'ms' => 'Ms'
-            ])
-            ->setDefault('mr')
-            ->setWrapper(20)
-        )
-        ->addField((new Text('profile_first_name', 'First Name'))
-            ->setPlaceholder('Johnny')
-            ->setWrapper(40)
-        )
-        ->addField((new Text('profile_surname', 'Surname'))
-            ->setPlaceholder('Acfseed')
-            ->setWrapper(40)
-        )
-        ->addField((new Group('foroffice', 'Office Use Only'))
-            // Repeaters and groups allow for fields to be added directly against them
-            ->addField((new DatePicker('signedup_on', 'Signed Up Date'))
-                ->setWrapper(50))
-            ->addField((new Text('officer_name', 'Officer Name'))
-                ->setDefault('')
-                ->setWrapper(50))
-        )
-        ->addField((new Repeater('profile_emails', 'Email Addresses'))
-            ->addField((new Text('address', 'Email Address'))
-                ->setPlaceholder('')
-                ->setWrapper(50)
+    $builder = (new Builder())
+        ->addFieldGroup((new FieldGroup('example_settings', 'Settings'))
+            // Add that we want these fields to appear on the page post type
+            ->addLocation('post_type', 'page')
+            // Add various fields, tabs etc
+            ->addField((new Tab('profile', 'PROFILE DETAILS')))
+            ->addField((new Select('profile_title', 'Title'))
+                ->setChoices([
+                    'mr' => 'Mr',
+                    'mrs' => 'Mrs',
+                    'ms' => 'Ms'
+                ])
+                ->setDefault('mr')
+                ->setWrapper(20)
             )
-            ->addField((new Text('label', 'Email Label'))
-                ->setPlaceholder('')
-                ->setWrapper(50)
+            ->addField((new Text('profile_first_name', 'First Name'))
+                ->setPlaceholder('Johnny')
+                ->setWrapper(40)
+            )
+            ->addField((new Text('profile_surname', 'Surname'))
+                ->setPlaceholder('Acfseed')
+                ->setWrapper(40)
+            )
+            ->addField((new Group('foroffice', 'Office Use Only'))
+                // Repeaters and groups allow for fields to be added directly against them
+                ->addField((new DatePicker('signedup_on', 'Signed Up Date'))
+                    ->setWrapper(50))
+                ->addField((new Text('officer_name', 'Officer Name'))
+                    ->setDefault('')
+                    ->setWrapper(50))
+            )
+            ->addField((new Repeater('profile_emails', 'Email Addresses'))
+                ->addField((new Text('address', 'Email Address'))
+                    ->setPlaceholder('')
+                    ->setWrapper(50)
+                )
+                ->addField((new Text('label', 'Email Label'))
+                    ->setPlaceholder('')
+                    ->setWrapper(50)
+                )
             )
         );
     // Call the acf function to register the field group
