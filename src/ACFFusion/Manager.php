@@ -32,9 +32,14 @@ class Manager {
         return $this;
     }
 
-    public function dump($mode='name') {
+    public function dumpKeys() {
         // Retrieve the current field values
-        return $this->toValues($this->values,'key',$mode);
+        return $this->toValues('key', 'key');
+    }
+
+    public function dumpNames() {
+        // Retrieve the current field values
+        return $this->toValues('key', 'code');
     }
 
     public function inject($values, $mode='key') {
