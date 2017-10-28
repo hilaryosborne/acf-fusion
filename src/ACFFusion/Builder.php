@@ -4,232 +4,125 @@ namespace ACFFusion;
 
 use Underscore\Types\Arrays;
 
-class Builder extends Field {
+class Builder {
 
-    public static $defaults = [
-        'key' => '',
-        'title' => '',
-        'fields' => [],
-        'location' => [],
-        'menu_order' => 0,
-        'position' => 'normal',
-        'style' => 'default',
-        'label_placement' => 'top',
-        'instruction_placement' => 'label',
-        'hide_on_screen' => '',
-    ];
+    public $fieldGroups = [];
 
-    public static $type = 'group';
-
-    public $fields = [];
-
-    public function __construct($code, $label) {
-        // Call the parent first to set all the standard field values
-        parent::__construct($code, $label);
-        // Set the title value, this is unique to core groups
-        $this->settings['title'] = $label;
-    }
-
-    public function addLocation($param, $value, $operator='==') {
-
-        $this->settings['location'][] = [
-            [
-                'param' => $param,
-                'operator' => $operator,
-                'value' => $value,
-            ]
-        ];
-
-        return $this;
-
-    }
-
-    public function setMenuOrder($value) {
-        // Set the updated value
-        $this->settings['menu_order'] = (int)$value;
-        // Return for chaining
-        return $this;
-    }
-
-    public function setPosition($value) {
-        // Set the updated value
-        $this->settings['position'] = (string)$value;
-        // Return for chaining
-        return $this;
-    }
-
-    public function setStyle($value) {
-        // Set the updated value
-        $this->settings['style'] = (string)$value;
-        // Return for chaining
-        return $this;
-    }
-
-    public function setInstructionPlacement($value) {
-        // Set the updated value
-        $this->settings['instruction_placement'] = (string)$value;
-        // Return for chaining
-        return $this;
-    }
-
-    public function setHideOnScreen($value) {
-        // Set the updated value
-        $this->settings['hide_on_screen'] = (string)$value;
-        // Return for chaining
-        return $this;
-    }
-
-    public function setLabelPlacement($value) {
-        // Set the updated value
-        $this->settings['label_placement'] = (string)$value;
-        // Return for chaining
-        return $this;
-    }
-
-    public function setLocation($value) {
-        // Set the updated value
-        $this->settings['location'] = (array)$value;
-        // Return for chaining
-        return $this;
-    }
-
-    public function addField($fieldObj) {
-        // Set the parent for future use
-        $fieldObj->setParent($this);
+    public function addFieldGroup($fieldGroupObj) {
         // Add to the fields collection
-        $this->fields[] = $fieldObj;
+        $this->fieldGroups[] = $fieldGroupObj;
         // Return for chaining
         return $this;
     }
 
-    public function addFieldset($fieldset, $prefix='') {
-        // Set the parent for future use
-        $fieldset->fields($this, $prefix);
-        // Return for chaining
-        return $this;
+    public function getFieldGroup($path) {
+        // Retrieve the fieldgroups
+        return Arrays::get($this->fieldGroups, $path);
     }
 
-    public function toArray() {
-        // Retrieve the field settings
-        $settings = $this->settings;
-        // Loop through each of the fields
-        foreach ($this->fields as $k => $field) {
-            // Populate the subfields with the to array results
-            $settings['fields'][$field->getCode()] = $field->toArray();
-        }
-        // return the built settings
-        return $settings;
+    public function getFieldGroups() {
+        // Retrieve the fieldgroups
+        return $this->fieldGroups;
     }
 
-    public function toSettings() {
-        // Retrieve the field settings
-        $settings = $this->settings;
-        // Loop through each of the fields
-        foreach ($this->fields as $k => $field) {
-            // Populate the subfields with the to array results
-            $settings['fields'][] = $field->toSettings();
-        }
-        // return the built settings
-        return $settings;
-    }
-
-    public function toKeys() {
-        // Retrieve the field settings
-        $keys = [];
-        // Loop through each of the fields
-        foreach ($this->fields as $k => $field) {
-            // Populate the subfields with the to array results
-            $keys = array_merge($keys, $field->toKeys());
-        }
-        // return the built settings
-        return $keys;
-    }
-
-    public function toNames() {
-        // Retrieve the field settings
-        $names = [];
-        // Loop through each of the fields
-        foreach ($this->fields as $k => $field) {
-            // Populate the subfields with the to array results
-            $names = array_merge($names, $field->toNames());
-        }
-        // return the built settings
-        return $names;
-    }
-
-    public function getFieldObject($path) {
+    public function getFieldObject($path, $format='names') {
         // Convert the subfields to an array
-        $fields = $this->toArray();
-        // THIS NEEDS REGEX WORK!
-        $filtered = preg_replace("/(\.[0-9]+\.)/", ".",$path);
-        $filtered = preg_replace("/(\.[0-9]+)/", "",$filtered);
-        $filtered = preg_replace("/([0-9]+\.)/", "",$filtered);
-        // Replace all dots with subfields
-        // Child field objects are stored within subfields
-        $prepared = str_replace('.','.sub_fields.', $filtered);
+        $fields = $this->toObjects($format);
+        // Retrieve the field object
+        $fieldObj = Arrays::get($fields, $path);
         // Return the field object
-        return Arrays::get($fields['fields'], $prepared);
+        return $fieldObj;
     }
 
-    public function getFieldArray($path) {
-        // Convert the subfields to an array
-        $fields = $this->toArray();
-        // THIS NEEDS REGEX WORK!
-        $filtered = preg_replace("/(\.[0-9]+\.)/", ".",$path);
-        $filtered = preg_replace("/(\.[0-9]+)/", "",$filtered);
-        $filtered = preg_replace("/([0-9]+\.)/", "",$filtered);
-        // Replace all dots with subfields
-        // Child field objects are stored within subfields
-        $prepared = str_replace('.','.sub_fields.', $filtered);
-        // Return the field object
-        return Arrays::get($fields['fields'], $prepared);
-    }
+    /**
+     * RETURN FIELD OBJECT INDEX
+     * @param string $format
+     * @return array
+     */
 
-    public function getIndex($values) {
+    public function toObjects($format='key') {
         // Retrieve the field settings
         $index = new \stdClass();
         // The collection to add items to
         $index->collection = [];
         // Loop through each of the fields
-        foreach ($this->fields as $k => $fieldObj) {
-            // Retrieve the value
-            $value = isset($values[$fieldObj->getKey()]) ? $values[$fieldObj->getKey()] : false ;
+        foreach ($this->fieldGroups as $k => $fieldGroupObj) {
             // Populate the subfields with the to array results
-            $fieldObj->toIndex($index, $value);
+            $fieldGroupObj->toObjects($index, $format);
         }
         // return the built settings
         return $index->collection;
     }
 
-    public function toValues($values, $valueFormat='key', $outFormat='key', $prefix='') {
-        // Retrieve the field settings
-        $output = [];
-        // If the values are coming from acf
-        if ($valueFormat === 'acf') {
-            // The filtered array
-            $filtered = [];
-            // Loop through each of the fields
-            foreach ($this->fields as $k => $fieldObj) {
-                // If the value does not exist for that field object
-                if (!isset($values[$fieldObj->getCode()])) { continue; }
-                // Set the filtered array
-                $filtered[$fieldObj->getKey()] = $values[$fieldObj->getCode()];
-            }
-            // Replace the values array
-            $values = $filtered;
-        }
-        // Loop through each of the fields
-        foreach ($this->fields as $k => $fieldObj) {
-            // Determine the keys we are going to look for
-            $valueKey = ($valueFormat === 'key' || $valueFormat === 'acf') ? $fieldObj->getKey() : $fieldObj->getCode();
-            // If no value has been set
-            if (!isset($values[$valueKey])) { continue; }
-            // Populate the subfields with the to array results
-            $output = array_merge($output, $fieldObj->toValues($values[$valueKey], $valueFormat, $outFormat));
+    /**
+     * RETURN FIELD OBJECTS
+     * @param string $format
+     * @return array
+     */
+
+    public function toArray($format='key') {
+        // The array to populate with filtered objects
+        $fieldGroups = [];
+        // Loop through each of the field groups
+        foreach ($this->fieldGroups as $k => $fieldGroupObj) {
+            // Populate with the populated field group
+            $fieldGroups[$fieldGroupObj->getCode()] = $fieldGroupObj->toArray($format);
         }
         // return the built settings
-        return $output;
+        return $fieldGroups;
     }
 
+    /**
+     * GET ACF REGISTER FRIENDLY FIELDS
+     * @return array
+     */
+
+    public function toSettings() {
+        // The array to populate with filtered objects
+        $fieldGroups = [];
+        // Loop through each of the field groups
+        foreach ($this->fieldGroups as $k => $fieldGroupObj) {
+            // Populate with the populated field group
+            $fieldGroups[$fieldGroupObj->getCode()] = $fieldGroupObj->toSettings();
+        }
+        // return the built settings
+        return $fieldGroups;
+    }
+
+    /**
+     * ACF FRIENDLY RETRIEVE KEYS
+     * @return array
+     */
+
+    public function toKeys() {
+        // The array to populate with filtered objects
+        $fieldGroups = [];
+        // Loop through each of the field groups
+        foreach ($this->fieldGroups as $k => $fieldGroupObj) {
+            // Populate with the populated field group
+            $fieldGroups = array_merge($fieldGroups, $fieldGroupObj->toKeys());
+        }
+        // return the built settings
+        return $fieldGroups;
+    }
+
+    /**
+     * ACF FRIENDLY RETRIEVE NAMES
+     * @return array
+     */
+
+    public function toNames() {
+        // The array to populate with filtered objects
+        $fieldGroups = [];
+        // Loop through each of the field groups
+        foreach ($this->fieldGroups as $k => $fieldGroupObj) {
+            // Populate with the populated field group
+            $fieldGroups = array_merge($fieldGroups, $fieldGroupObj->toNames());
+            // Populate with the populated field group
+            $fieldGroups[$fieldGroupObj->getCode()] = $fieldGroupObj->toNames();
+        }
+        // return the built settings
+        return $fieldGroups;
+    }
 
 }

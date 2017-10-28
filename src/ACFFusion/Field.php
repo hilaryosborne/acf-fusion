@@ -125,6 +125,13 @@ class Field {
         $index->collection[$keyPrefix.$this->getKey()] = $namePrefix.$this->getCode();
     }
 
+    public function toObjects($index, $format='key', $prefix='') {
+
+        $outKey = ($format === 'key' || $format === 'acf')  ? $this->getKey() : $this->getCode();
+        // Set the field in the index collection
+        $index->collection[$prefix.$outKey] = $this;
+    }
+
     public function toNames() {
         // return the built settings
         return static::$purpose == 'data' ? [$this->getCode() => ''] : [];

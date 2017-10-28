@@ -81,13 +81,15 @@ class Repeater extends Field {
         return $this;
     }
 
-    public function toArray() {
+    public function toArray($format='key') {
         // Retrieve the field settings
         $settings = $this->settings;
+        // Retrieve the out key
+        $outPrefix = ($format === 'key')  ? $this->getKey() :$this->getCode();
         // Loop through each of the sub fields
         foreach ($this->subFields as $k => $field) {
             // Populate the subfields with the to array results
-            $settings['sub_fields'][$field->getCode()] = $field->toArray();
+            $settings['sub_fields'][$outPrefix] = $field->toArray($format);
         }
         // return the built settings
         return $settings;
@@ -115,6 +117,22 @@ class Repeater extends Field {
         }
         // return the built settings
         return [$this->getKey() => $keys];
+    }
+
+    public function toObjects($index, $format='key', $prefix='') {
+        // Retrieve the field settings
+        $objects = [];
+        // Retrieve the out key
+        $outPrefix = ($format === 'key')  ? $prefix.$this->getKey() : $prefix.$this->getCode();
+        // Set the field in the index collection
+        $index->collection[$outPrefix] = $this;
+        // Loop through each of the fields
+        foreach ($this->subFields as $_k => $fieldObj) {
+            // Populate the subfields with the to array results
+            $fieldObj->toObjects($index, $format, $outPrefix.'.');
+        }
+        // return the built settings
+        return $objects;
     }
 
     public function toIndex($index, $values, $keyPrefix='', $namePrefix='') {

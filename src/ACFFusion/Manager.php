@@ -6,9 +6,7 @@ use Underscore\Types\Arrays;
 
 class Manager {
 
-    public $prefix = '';
-
-    public $pid = 0;
+    public $pid;
 
     public $builderObj;
 
@@ -20,39 +18,16 @@ class Manager {
         $this->builderObj = $builderObj;
     }
 
-    public function isPost() {
-        // Set the pid prefix
-        $this->prefix = '';
-        // Return for chaining
-        return $this;
-    }
-
-    public function isTaxonomy($slug) {
-        // Set the pid prefix
-        $this->prefix = $slug.'_';
-        // Return for chaining
-        return $this;
-    }
-
-    public function isTerm() {
-        // Set the pid prefix
-        $this->prefix = 'term_';
-        // Return for chaining
-        return $this;
-    }
-
-    public function isUser() {
-        // Set the pid prefix
-        $this->prefix = 'user_';
-        // Return for chaining
-        return $this;
+    public function getBuilder() {
+        // Return the builder object
+        return $this->builderObj;
     }
 
     public function load() {
         // Retrieve the manager object
         $builderObj = $this->builderObj;
         // Retrieve the current field values
-        $this->values = $builderObj->toValues(get_fields($this->prefix.$this->pid, false),'acf','key');
+        $this->values = $this->toValues(get_fields($this->pid, false),'acf','key');
         // Return for chaining
         return $this;
     }
@@ -104,7 +79,7 @@ class Manager {
         // The values should be stored as KEYS for ACF to work
         foreach ($values as $fieldKey => $fieldValues) {
             // Update the field
-            update_field($fieldKey, $fieldValues, $this->prefix.$this->pid);
+            update_field($fieldKey, $fieldValues, $this->pid);
         }
     }
 
@@ -125,14 +100,49 @@ class Manager {
         // If no object was found then return the provided variables
         // Do this incase fields have been moved or removed
         if (!$fieldObject) { return $value; }
+        // Rebuild the acf cache key
+        // This cache key is directly from ACF
+        $cache_key = "format_value/post_id={$this->pid}/name={$fieldObject['name']}";
         // Apply ACF filters
         // These filters are directly from ACF
-        $value = apply_filters( "acf/format_value", $value, $this->prefix.$this->pid, $fieldObject );
-        $value = apply_filters( "acf/format_value/type={$fieldObject['type']}", $value, $this->prefix.$this->pid, $fieldObject );
-        $value = apply_filters( "acf/format_value/name={$fieldObject['_name']}", $value, $this->prefix.$this->pid, $fieldObject );
-        $value = apply_filters( "acf/format_value/key={$fieldObject['key']}", $value, $this->prefix.$this->pid, $fieldObject );
+        $value = apply_filters( "acf/format_value", $value, $this->pid, $fieldObject );
+        $value = apply_filters( "acf/format_value/type={$fieldObject['type']}", $value, $this->pid, $fieldObject );
+        $value = apply_filters( "acf/format_value/name={$fieldObject['_name']}", $value, $this->pid, $fieldObject );
+        $value = apply_filters( "acf/format_value/key={$fieldObject['key']}", $value, $this->pid, $fieldObject );
+        // update cache
+        acf_set_cache($cache_key, $value);
         // Return the filtered value
         return $value;
+    }
+
+    public function getIndex($values) {
+        // The array to populate with filtered objects
+        $fieldGroups = [];
+        // Loop through each of the field groups
+        foreach ($this->fieldGroups as $k => $fieldGroupObj) {
+            // Populate with the populated field group
+            $fieldGroups[$fieldGroupObj->getKey()] = $fieldGroupObj->getIndex($values);
+        }
+        // return the built settings
+        return $fieldGroups;
+    }
+
+    public function toValues($values, $valueFormat='key', $outFormat='key') {
+        // Retrieve the builder object
+        $builderObj = $this->getBuilder();
+        // Retrieve the field groups
+        $fieldGroups = $builderObj->getFieldGroups();
+        // If no field groups have been added
+        if (!is_array($fieldGroups)) { return []; }
+        // Retrieve the field settings
+        $output = [];
+        // Loop through each field group
+        foreach ($fieldGroups as $k => $fieldGroup) {
+            // Populate the subfields with the to array results
+            $output = array_merge($output, $fieldGroup->toValues($values, $valueFormat, $outFormat));
+        }
+        // return the built settings
+        return $output;
     }
 
 }
