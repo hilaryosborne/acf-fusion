@@ -44,14 +44,14 @@ class Manager {
 
     public function inject($values, $mode='key') {
         // Update the values
-        $this->values = $mode === 'name' ? $this->builderObj->toValues($values,'name','key') : $values;
+        $this->values = $mode === 'name' ? $this->builderObj->toValues('name','key', $values) : $values;
         // Return for chaining
         return $this;
     }
 
     public function getField($path=false, $default=false, $format=true) {
         // Retrieve the name values
-        $names = $this->toValues($this->values,'key','name');
+        $names = $this->toValues('key','name', $this->values);
         // Attempt to retrieve the field object
         $value = Arrays::get($names, $path);
         // If no value exists with that keypath
@@ -62,11 +62,11 @@ class Manager {
 
     public function setField($path, $value) {
         // Retrieve the name values
-        $names = $this->toValues($this->values,'key','name');
+        $names = $this->toValues('key','name', $this->values);
         // Retrieve the current field values
         $values = Arrays::set($names, $path, $value);
         // Retrieve the name values
-        $this->values = $this->toValues($values,'name','key');
+        $this->values = $this->toValues('name','key', $values);
         // Return for chaining
         return $this;
     }
