@@ -27,7 +27,7 @@ class Manager {
         // Retrieve the current field values
         $this->values = $this->toValues('acf','key', get_fields($this->oid, false));
         // Apply relevant filters
-        apply_filters('fusion_load_fields', $this);
+        apply_filters('fusion/load_fields', $this);
         // Return for chaining
         return $this;
     }
@@ -70,12 +70,12 @@ class Manager {
         // Retrieve the raw values
         $values = $this->values;
         // Apply relevant filters
-        apply_filters('fusion_save_fields', $this);
+        apply_filters('fusion/save_fields', $this);
         // Loop through each of the stored values
         // The values should be stored as KEYS for ACF to work
         foreach ($values as $fieldKey => $fieldValues) {
             // Apply relevant filters
-            apply_filters('fusion_save_field', $fieldValues, $this);
+            apply_filters('fusion/save_field', $fieldValues, $this);
             // Update the field
             update_field($fieldKey, $fieldValues, $this->oid);
         }

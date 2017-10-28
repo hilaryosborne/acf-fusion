@@ -39,9 +39,8 @@ class FieldGroup extends Field {
                 'value' => $value,
             ]
         ];
-
+        // Return for chaining
         return $this;
-
     }
 
     public function setMenuOrder($value) {
@@ -119,8 +118,8 @@ class FieldGroup extends Field {
             // Populate the subfields with the to array results
             $settings['fields'][$outPrefix] = $field->toArray($format);
         }
-        // return the built settings
-        return $settings;
+        // Return the settings array
+        return apply_filters('fusion/group/to_array', $settings, $this);
     }
 
     public function toSettings() {
@@ -131,8 +130,8 @@ class FieldGroup extends Field {
             // Populate the subfields with the to array results
             $settings['fields'][] = $field->toSettings();
         }
-        // return the built settings
-        return $settings;
+        // Return the settings array
+        return apply_filters('fusion/group/to_settings', $settings, $this);
     }
 
     public function toObjects($index, $format='key', $prefix='') {
@@ -143,6 +142,8 @@ class FieldGroup extends Field {
             // Populate the subfields with the to array results
             $fieldObj->toObjects($index, $format, '');
         }
+        // Filter the object
+        $objects = apply_filters('fusion/group/to_objects', $objects, $this);
         // return the built settings
         return $objects;
     }
@@ -155,8 +156,8 @@ class FieldGroup extends Field {
             // Populate the subfields with the to array results
             $keys = array_merge($keys, $field->toKeys());
         }
-        // return the built settings
-        return $keys;
+        // Return the settings array
+        return apply_filters('fusion/group/to_keys', $keys, $this);
     }
 
     public function toNames() {
@@ -168,7 +169,7 @@ class FieldGroup extends Field {
             $names = array_merge($names, $field->toNames());
         }
         // return the built settings
-        return $names;
+        return apply_filters('fusion/group/to_names', $names, $this);
     }
 
     public function getIndex($values) {
@@ -213,6 +214,8 @@ class FieldGroup extends Field {
             // Populate the subfields with the to array results
             $output = array_merge($output, $fieldObj->toValues($values[$valueKey], $valueFormat, $outFormat));
         }
+        // Filter the value
+        $output = apply_filters('fusion/group/to_values', $output, $this);
         // return the built settings
         return $output;
     }

@@ -36,7 +36,7 @@ class Field {
 
     public function getCode() {
         // Return the provided code
-        return apply_filters('fusion_field_code', $this->code, $this);
+        return apply_filters('fusion/field/code', $this->code, $this);
     }
 
     public function getKey() {
@@ -47,7 +47,7 @@ class Field {
         } // Otherwise return the standard key
         else { $key = static::$type.'_'.$this->getCode(); }
         // Return the filtered key
-        return apply_filters('fusion_field_key', $key, $this);
+        return apply_filters('fusion/field/key', $key, $this);
     }
 
     public function setParent($parentObj) {
@@ -107,25 +107,25 @@ class Field {
 
     public function toArray() {
         // Return the settings array
-        return apply_filters('fusion_field_toarray', $this->settings, $this);
+        return apply_filters('fusion/field/to_array', $this->settings, $this);
     }
 
     public function toSettings() {
         // Return the settings array
-        return apply_filters('fusion_field_tosettings', $this->settings, $this);
+        return apply_filters('fusion/field/to_settings', $this->settings, $this);
     }
 
     public function toKeys() {
         // return the built settings
         $keys = static::$purpose == 'data' ? [$this->getKey() => ''] : [];
         // Return the settings array
-        return apply_filters('fusion_field_tokeys', $keys, $this);
+        return apply_filters('fusion/field/to_keys', $keys, $this);
     }
 
     public function toIndex($index, $values, $keyPrefix='', $namePrefix='') {
         // Filter the values
-        $indexKey = apply_filters('fusion_field_toindex_key', $keyPrefix.$this->getKey(), $this);
-        $indexCode = apply_filters('fusion_field_toindex_code', $namePrefix.$this->getCode(), $this);
+        $indexKey = $keyPrefix.$this->getKey();
+        $indexCode = $namePrefix.$this->getCode();
         // Set the field in the index collection
         $index->collection[$indexKey] = $indexCode;
     }
@@ -134,7 +134,7 @@ class Field {
         // Determine the
         $outKey = ($format === 'key' || $format === 'acf')  ? $this->getKey() : $this->getCode();
         // Filter the object
-        $object = apply_filters('fusion_field_toobjects', $this, $this);
+        $object = apply_filters('fusion/field/to_objects', $this, $this);
         // Set the field in the index collection
         $index->collection[$prefix.$outKey] = $object;
     }
@@ -143,18 +143,15 @@ class Field {
         // Determine the names to return
         $names = static::$purpose == 'data' ? [$this->getCode() => ''] : [];
         // return the built settings
-        return apply_filters('fusion_field_tonames', $names, $this);
+        return apply_filters('fusion/field/to_names', $names, $this);
     }
 
     public function toValues($value, $valueFormat='key', $outFormat='key', $prefix='') {
         // Determine the keys we are going to look for
         $valueKey = ($valueFormat === 'key' || $valueFormat === 'acf') ? $this->getKey() : $this->getCode();
-        $valueKey = apply_filters('fusion_field_tovalue_value', $valueKey, $this);
-        // Determine the keys we are outputting
         $outKey = ($outFormat === 'key' || $outFormat === 'acf')  ? $this->getKey() : $this->getCode();
-        $outKey = apply_filters('fusion_field_tovalue_out', $outKey, $this);
         // Filter the value
-        $value = apply_filters('fusion_field_tovalue_value', $value, $this);
+        $value = apply_filters('fusion/field/to_values', $value, $this);
         // return the built settings
         return static::$purpose == 'data' ? [$prefix.$outKey => $value] : [];
     }

@@ -92,7 +92,7 @@ class Repeater extends Field {
             $settings['sub_fields'][$outPrefix] = $field->toArray($format);
         }
         // Return the settings array
-        return apply_filters('fusion_field_toarray', $settings, $this);
+        return apply_filters('fusion/field/to_array', $settings, $this);
     }
 
     public function toSettings() {
@@ -104,7 +104,7 @@ class Repeater extends Field {
             $settings['sub_fields'][] = $field->toSettings();
         }
         // Return the settings array
-        return apply_filters('fusion_field_tosettings', $settings, $this);
+        return apply_filters('fusion/field/to_settings', $settings, $this);
     }
 
     public function toKeys() {
@@ -116,7 +116,7 @@ class Repeater extends Field {
             $keys = array_merge($keys, $field->toKeys());
         }
         // Return the settings array
-        return apply_filters('fusion_field_tokeys', [$this->getKey() => $keys], $this);
+        return apply_filters('fusion/field/to_keys', [$this->getKey() => $keys], $this);
     }
 
     public function toObjects($index, $format='key', $prefix='') {
@@ -132,7 +132,7 @@ class Repeater extends Field {
             $fieldObj->toObjects($index, $format, $outPrefix.'.');
         }
         // Filter the object
-        return apply_filters('fusion_field_toobjects', $objects, $this);
+        return apply_filters('fusion/field/to_objects', $objects, $this);
     }
 
     public function toIndex($index, $values, $keyPrefix='', $namePrefix='') {
@@ -166,7 +166,7 @@ class Repeater extends Field {
         // return the built settings
         $names = [$this->getCode() => $names];
         // return the built settings
-        return apply_filters('fusion_field_tonames', $names, $this);
+        return apply_filters('fusion/field/to_names', $names, $this);
     }
 
     public function toValues($values, $valueFormat='key', $outFormat='key', $prefix='') {
@@ -195,7 +195,7 @@ class Repeater extends Field {
             $output[] = $fieldOutput;
         }
         // Filter the value
-        return apply_filters('fusion_field_tovalue_value', [$outKey => $output], $this);
+        return apply_filters('fusion/field/to_values', [$outKey => $output], $this);
     }
 
 }

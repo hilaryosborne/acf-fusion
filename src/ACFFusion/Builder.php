@@ -42,12 +42,6 @@ class Builder {
         }
     }
 
-    /**
-     * RETURN FIELD OBJECT INDEX
-     * @param string $format
-     * @return array
-     */
-
     public function toObjects($format='key') {
         // Retrieve the field settings
         $index = new \stdClass();
@@ -58,15 +52,11 @@ class Builder {
             // Populate the subfields with the to array results
             $fieldGroupObj->toObjects($index, $format);
         }
+        // Filter the object
+        apply_filters('fusion/builder/to_objects', $index, $this);
         // return the built settings
         return $index->collection;
     }
-
-    /**
-     * RETURN FIELD OBJECTS
-     * @param string $format
-     * @return array
-     */
 
     public function toArray($format='key') {
         // The array to populate with filtered objects
@@ -76,14 +66,9 @@ class Builder {
             // Populate with the populated field group
             $fieldGroups[$fieldGroupObj->getCode()] = $fieldGroupObj->toArray($format);
         }
-        // return the built settings
-        return $fieldGroups;
+        // Return the settings array
+        return apply_filters('fusion/builder/to_array', $fieldGroups, $this);
     }
-
-    /**
-     * GET ACF REGISTER FRIENDLY FIELDS
-     * @return array
-     */
 
     public function toSettings() {
         // The array to populate with filtered objects
@@ -93,14 +78,9 @@ class Builder {
             // Populate with the populated field group
             $fieldGroups[$fieldGroupObj->getCode()] = $fieldGroupObj->toSettings();
         }
-        // return the built settings
-        return $fieldGroups;
+        // Return the settings array
+        return apply_filters('fusion/builder/to_settings', $fieldGroups, $this);
     }
-
-    /**
-     * ACF FRIENDLY RETRIEVE KEYS
-     * @return array
-     */
 
     public function toKeys() {
         // The array to populate with filtered objects
@@ -110,14 +90,9 @@ class Builder {
             // Populate with the populated field group
             $fieldGroups = array_merge($fieldGroups, $fieldGroupObj->toKeys());
         }
-        // return the built settings
-        return $fieldGroups;
+        // Return the settings array
+        return apply_filters('fusion/builder/to_keys', $fieldGroups, $this);
     }
-
-    /**
-     * ACF FRIENDLY RETRIEVE NAMES
-     * @return array
-     */
 
     public function toNames() {
         // The array to populate with filtered objects
@@ -130,7 +105,7 @@ class Builder {
             $fieldGroups[$fieldGroupObj->getCode()] = $fieldGroupObj->toNames();
         }
         // return the built settings
-        return $fieldGroups;
+        return apply_filters('fusion/builder/to_names', $fieldGroups, $this);
     }
 
 }
