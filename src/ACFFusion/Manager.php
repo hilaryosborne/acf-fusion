@@ -24,8 +24,6 @@ class Manager {
     }
 
     public function load() {
-        // Retrieve the manager object
-        $builderObj = $this->builderObj;
         // Retrieve the current field values
         $this->values = $this->toValues(get_fields($this->pid, false),'acf','key');
         // Return for chaining
@@ -33,10 +31,8 @@ class Manager {
     }
 
     public function dump($mode='name') {
-        // Retrieve the manager object
-        $builderObj = $this->builderObj;
         // Retrieve the current field values
-        return $builderObj->toValues($this->values,'key',$mode);
+        return $this->toValues($this->values,'key',$mode);
     }
 
     public function inject($values, $mode='key') {
@@ -47,10 +43,8 @@ class Manager {
     }
 
     public function getField($path=false, $default=false, $format=true) {
-        // Retrieve the manager object
-        $builderObj = $this->builderObj;
         // Retrieve the name values
-        $names = $builderObj->toValues($this->values,'key','name');
+        $names = $this->toValues($this->values,'key','name');
         // Attempt to retrieve the field object
         $value = Arrays::get($names, $path);
         // If no value exists with that keypath
@@ -60,14 +54,12 @@ class Manager {
     }
 
     public function setField($path, $value) {
-        // Retrieve the manager object
-        $builderObj = $this->builderObj;
         // Retrieve the name values
-        $names = $builderObj->toValues($this->values,'key','name');
+        $names = $this->toValues($this->values,'key','name');
         // Retrieve the current field values
         $values = Arrays::set($names, $path, $value);
         // Retrieve the name values
-        $this->values = $builderObj->toValues($values,'name','key');
+        $this->values = $this->toValues($values,'name','key');
         // Return for chaining
         return $this;
     }
@@ -83,48 +75,45 @@ class Manager {
         }
     }
 
-    public function format($path, $value, $mode ='keys') {
+    public function format($path, $value) {
         // Retrieve the manager object
         $builderObj = $this->builderObj;
-        // Retrieve the field objects
-        $fields = $builderObj->toArray();
         // THIS NEEDS REGEX WORK!
         $filtered = preg_replace("/(\.[0-9]+\.)/", ".",$path);
         $filtered = preg_replace("/(\.[0-9]+)/", "",$filtered);
         $filtered = preg_replace("/([0-9]+\.)/", "",$filtered);
-        // Replace all dots with subfields
-        // Child field objects are stored within subfields
-        $prepared = str_replace('.','.sub_fields.', $filtered);
         // Attempt to retrieve the field object
-        $fieldObject = Arrays::get($fields['fields'], $prepared);
+        $fieldObject = $builderObj->getFieldObject($filtered);
         // If no object was found then return the provided variables
         // Do this incase fields have been moved or removed
         if (!$fieldObject) { return $value; }
+        // Retrieve the settings
+        $settings = $fieldObject->toSettings();
         // Rebuild the acf cache key
-        // This cache key is directly from ACF
-        $cache_key = "format_value/post_id={$this->pid}/name={$fieldObject['name']}";
         // Apply ACF filters
         // These filters are directly from ACF
-        $value = apply_filters( "acf/format_value", $value, $this->pid, $fieldObject );
-        $value = apply_filters( "acf/format_value/type={$fieldObject['type']}", $value, $this->pid, $fieldObject );
-        $value = apply_filters( "acf/format_value/name={$fieldObject['_name']}", $value, $this->pid, $fieldObject );
-        $value = apply_filters( "acf/format_value/key={$fieldObject['key']}", $value, $this->pid, $fieldObject );
-        // update cache
-        acf_set_cache($cache_key, $value);
+        $value = apply_filters( "acf/format_value", $value, $this->pid, $settings );
+        $value = apply_filters( "acf/format_value/type={$settings['type']}", $value, $this->pid, $settings );
+        $value = apply_filters( "acf/format_value/name={$settings['_name']}", $value, $this->pid, $settings );
+        $value = apply_filters( "acf/format_value/key={$settings['key']}", $value, $this->pid, $settings );
         // Return the filtered value
         return $value;
     }
 
     public function getIndex($values) {
-        // The array to populate with filtered objects
-        $fieldGroups = [];
+        // Retrieve the builder object
+        $builderObj = $this->getBuilder();
+        // Retrieve the field groups
+        $fieldGroups = $builderObj->getFieldGroups();
+        // The indexed array
+        $indexed = [];
         // Loop through each of the field groups
-        foreach ($this->fieldGroups as $k => $fieldGroupObj) {
+        foreach ($fieldGroups as $k => $fieldGroupObj) {
             // Populate with the populated field group
-            $fieldGroups[$fieldGroupObj->getKey()] = $fieldGroupObj->getIndex($values);
+            $indexed[$fieldGroupObj->getKey()] = $fieldGroupObj->getIndex($values);
         }
         // return the built settings
-        return $fieldGroups;
+        return $indexed;
     }
 
     public function toValues($values, $valueFormat='key', $outFormat='key') {

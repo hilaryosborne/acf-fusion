@@ -34,6 +34,14 @@ class Builder {
         return $fieldObj;
     }
 
+    public function register() {
+        // Loop through each of the field groups
+        foreach ($this->fieldGroups as $k => $fieldGroupObj) {
+            // Populate with the populated field group
+            acf_add_local_field_group($fieldGroupObj->toSettings());
+        }
+    }
+
     /**
      * RETURN FIELD OBJECT INDEX
      * @param string $format
