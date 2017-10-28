@@ -91,8 +91,8 @@ class Repeater extends Field {
             // Populate the subfields with the to array results
             $settings['sub_fields'][$outPrefix] = $field->toArray($format);
         }
-        // return the built settings
-        return $settings;
+        // Return the settings array
+        return apply_filters('fusion_field_toarray', $settings, $this);
     }
 
     public function toSettings() {
@@ -103,8 +103,8 @@ class Repeater extends Field {
             // Populate the subfields with the to array results
             $settings['sub_fields'][] = $field->toSettings();
         }
-        // return the built settings
-        return $settings;
+        // Return the settings array
+        return apply_filters('fusion_field_tosettings', $settings, $this);
     }
 
     public function toKeys() {
@@ -115,8 +115,8 @@ class Repeater extends Field {
             // Populate the subfields with the to array results
             $keys = array_merge($keys, $field->toKeys());
         }
-        // return the built settings
-        return [$this->getKey() => $keys];
+        // Return the settings array
+        return apply_filters('fusion_field_tokeys', [$this->getKey() => $keys], $this);
     }
 
     public function toObjects($index, $format='key', $prefix='') {
@@ -131,8 +131,8 @@ class Repeater extends Field {
             // Populate the subfields with the to array results
             $fieldObj->toObjects($index, $format, $outPrefix.'.');
         }
-        // return the built settings
-        return $objects;
+        // Filter the object
+        return apply_filters('fusion_field_toobjects', $objects, $this);
     }
 
     public function toIndex($index, $values, $keyPrefix='', $namePrefix='') {
@@ -164,7 +164,9 @@ class Repeater extends Field {
             $names = array_merge($names, $field->toNames());
         }
         // return the built settings
-        return [$this->getCode() => $names];
+        $names = [$this->getCode() => $names];
+        // return the built settings
+        return apply_filters('fusion_field_tonames', $names, $this);
     }
 
     public function toValues($values, $valueFormat='key', $outFormat='key', $prefix='') {
@@ -192,8 +194,8 @@ class Repeater extends Field {
             // Add to the output
             $output[] = $fieldOutput;
         }
-        // return the built settings
-        return [$outKey => $output];
+        // Filter the value
+        return apply_filters('fusion_field_tovalue_value', [$outKey => $output], $this);
     }
 
 }

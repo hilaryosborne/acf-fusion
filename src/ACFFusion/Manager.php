@@ -6,15 +6,15 @@ use Underscore\Types\Arrays;
 
 class Manager {
 
-    public $pid;
+    public $oid;
 
     public $builderObj;
 
     protected $values = [];
 
-    public function __construct($pid, $builderObj)
+    public function __construct($oid, $builderObj)
     {
-        $this->pid = $pid;
+        $this->oid = $oid;
         $this->builderObj = $builderObj;
     }
 
@@ -25,7 +25,9 @@ class Manager {
 
     public function load() {
         // Retrieve the current field values
-        $this->values = $this->toValues(get_fields($this->pid, false),'acf','key');
+        $this->values = $this->toValues('acf','key', get_fields($this->oid, false));
+        // Apply relevant filters
+        apply_filters('fusion_load_fields', $this);
         // Return for chaining
         return $this;
     }
@@ -67,11 +69,15 @@ class Manager {
     public function save() {
         // Retrieve the raw values
         $values = $this->values;
+        // Apply relevant filters
+        apply_filters('fusion_save_fields', $this);
         // Loop through each of the stored values
         // The values should be stored as KEYS for ACF to work
         foreach ($values as $fieldKey => $fieldValues) {
+            // Apply relevant filters
+            apply_filters('fusion_save_field', $fieldValues, $this);
             // Update the field
-            update_field($fieldKey, $fieldValues, $this->pid);
+            update_field($fieldKey, $fieldValues, $this->oid);
         }
     }
 
@@ -92,21 +98,23 @@ class Manager {
         // Rebuild the acf cache key
         // Apply ACF filters
         // These filters are directly from ACF
-        $value = apply_filters( "acf/format_value", $value, $this->pid, $settings );
-        $value = apply_filters( "acf/format_value/type={$settings['type']}", $value, $this->pid, $settings );
-        $value = apply_filters( "acf/format_value/name={$settings['_name']}", $value, $this->pid, $settings );
-        $value = apply_filters( "acf/format_value/key={$settings['key']}", $value, $this->pid, $settings );
+        $value = apply_filters( "acf/format_value", $value, $this->oid, $settings );
+        $value = apply_filters( "acf/format_value/type={$settings['type']}", $value, $this->oid, $settings );
+        $value = apply_filters( "acf/format_value/name={$settings['_name']}", $value, $this->oid, $settings );
+        $value = apply_filters( "acf/format_value/key={$settings['key']}", $value, $this->oid, $settings );
         // Return the filtered value
         return $value;
     }
 
-    public function getIndex($values) {
+    public function toIndex($override=false) {
         // Retrieve the builder object
         $builderObj = $this->getBuilder();
         // Retrieve the field groups
         $fieldGroups = $builderObj->getFieldGroups();
         // The indexed array
         $indexed = [];
+        // If an override was provided
+        $values = $override ? $override : $this->values;
         // Loop through each of the field groups
         foreach ($fieldGroups as $k => $fieldGroupObj) {
             // Populate with the populated field group
@@ -116,13 +124,15 @@ class Manager {
         return $indexed;
     }
 
-    public function toValues($values, $valueFormat='key', $outFormat='key') {
+    public function toValues($valueFormat='key', $outFormat='key', $override=false) {
         // Retrieve the builder object
         $builderObj = $this->getBuilder();
         // Retrieve the field groups
         $fieldGroups = $builderObj->getFieldGroups();
         // If no field groups have been added
         if (!is_array($fieldGroups)) { return []; }
+        // If an override was provided
+        $values = $override ? $override : $this->values;
         // Retrieve the field settings
         $output = [];
         // Loop through each field group
