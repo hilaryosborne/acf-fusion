@@ -112,13 +112,13 @@ $value = $manager->getField('profile_emails.0.address', 'Some Default Value');
 Retrieves all values using the field names
 
 ```php
-$values = $manager->dump();
+$values = $manager->dumpNames();
 ```
 
 Retrieves all values using the field keys
 
 ```php
-$values = $manager->dump('key');
+$values = $manager->dumpKeys();
 ```
 
 ### Setting a field field groups
