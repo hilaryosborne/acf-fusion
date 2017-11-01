@@ -101,8 +101,6 @@ class Builder {
         foreach ($this->fieldGroups as $k => $fieldGroupObj) {
             // Populate with the populated field group
             $fieldGroups = array_merge($fieldGroups, $fieldGroupObj->toNames());
-            // Populate with the populated field group
-            $fieldGroups[$fieldGroupObj->getCode()] = $fieldGroupObj->toNames();
         }
         // return the built settings
         return apply_filters('fusion/builder/to_names', $fieldGroups, $this);

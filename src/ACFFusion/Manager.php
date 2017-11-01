@@ -27,7 +27,7 @@ class Manager {
         // Retrieve the current field values
         $this->values = $this->toValues('acf','key', get_fields($this->oid, false));
         // Apply relevant filters
-        apply_filters('fusion/load_fields', $this);
+        do_action('fusion/load_fields', $this);
         // Return for chaining
         return $this;
     }
@@ -44,7 +44,7 @@ class Manager {
 
     public function inject($values, $mode='key') {
         // Update the values
-        $this->values = $mode === 'name' ? $this->builderObj->toValues('name','key', $values) : $values;
+        $this->values = $mode === 'name' ? $this->builderObj->toValues($values,'name','key') : $values;
         // Return for chaining
         return $this;
     }
@@ -75,7 +75,7 @@ class Manager {
         // Retrieve the raw values
         $values = $this->values;
         // Apply relevant filters
-        apply_filters('fusion/save_fields', $this);
+        do_action('fusion/save_fields', $this);
         // Loop through each of the stored values
         // The values should be stored as KEYS for ACF to work
         foreach ($values as $fieldKey => $fieldValues) {
