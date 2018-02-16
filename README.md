@@ -1,5 +1,7 @@
 # ACF Fusion
 
+## PLEASE NOTE! This project is no longer maintained and has been moved to https://github.com/sackrin/fusion
+
 This project aims to provide a standard programming interface with the popular WordPress advanced custom fields plugin. Field groups are created and managed programmatically without the use of the graphical front end or acf-json files.
 
 Please note this library will only work correctly with field groups built using the fusion builder. In theory there shouldn't be any problem working with ACF field groups however the output of native field groups is unpredictable. It is advised to build all field groups using the fusion builder.
